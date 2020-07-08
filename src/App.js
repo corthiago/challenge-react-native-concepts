@@ -29,14 +29,23 @@ export default function App() {
     }
   )}
 
+  async function handleAddRepository() {
+    const response = await api.post('repositories', {
+      title: `New Project ${Date.now()}`,
+      owner: 'Thiago',
+      techs: ['Java', 'React']
+    });
+    setRepositories([...repositories, response.data]);
+  }
+
   function renderItem(repository) {
     return(
       <View style={styles.repositoryContainer}>
         <Text style={styles.repository}>{repository.title}</Text>
 
         <View style={styles.techsContainer}>
-          {repository.techs.map(tech => (
-            <Text style={styles.tech}>
+          {repository.techs.map((tech, index) => (
+            <Text key={index} style={styles.tech}>
               {tech}
             </Text>
           ))}
@@ -85,7 +94,12 @@ export default function App() {
           keyExtractor={repository => repository.id}
           renderItem={({item: repository}) => renderItem(repository)}
         />
-        
+        <TouchableOpacity
+          activeOpacity={0.6}
+          style={styles.button}
+          onPress={handleAddRepository}>
+          <Text style={styles.buttonText}>Add Repository</Text>
+        </TouchableOpacity>
       </SafeAreaView>
     </>
   );
@@ -131,6 +145,8 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   buttonText: {
     fontSize: 14,
